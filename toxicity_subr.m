@@ -1,11 +1,13 @@
 function [ S_HDODtox ] = toxicity_subr( S_HDOD,PNEC );
-%TOXICITY_S_HDODUBR S_HDODummary of this function goes here
-%   Detailed explanation goes here
+%% Created by Thomas Vijverberg on 04-09-2017 at Radboud University Nijmegen
+% Last edited by Thomas Vijverberg on 04-09-2017
 
-%[ S_HDOD ] = RIWA_show_row_column_names( S_HDOD );
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%OUTPUT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Outputs Water Quality Indices
+
 
 %% Bookkeeping - Matching available compounds in dataset versus compounds with PNEC registered value
-
+disp('Running toxicity_subr - remove values without PNEC - create Water Quality Indices (WQI)');
 %Only loop over lobith to decrease computing load
 for i = 1:1
     %Match dataset compounds versus compounds /w PNEC

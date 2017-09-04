@@ -1,4 +1,6 @@
 % Load dataset to workspace
+
+disp('');
 if(exist('StempLobith') ~= 1)
     load('StempLobith.mat');
 end
@@ -8,6 +10,6 @@ end
 if(exist('PNEC') ~= 1)
     load('PNEC.mat');
 end
-PNEC = fix_PNEC(PNEC);
-[ S_HDOD ] = PCAIA_HDOD( StempLobith ,Slobith);
-[ S_HDODtox ] = toxicity_subr( S_HDOD,PNEC );
+PNEC = fillPNEC_Table(PNEC);
+[ S_HighDensity ] = data_filter( StempLobith ,Slobith);
+[ S_HDODtox ] = toxicity_subr( S_HighDensity,PNEC );
