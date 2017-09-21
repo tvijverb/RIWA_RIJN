@@ -22,4 +22,4 @@ if(exist('S_HighDensity') ~= 1) %skip this step if we want to avoid long computa
     [ S_HighDensity ] = data_filter( StempLobith ,Slobith);
 end
 
-[ S_HighDensityToxicity ] = toxicity_subr( S_HighDensity,PNEC );
+[ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC );

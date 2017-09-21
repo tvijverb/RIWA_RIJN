@@ -59,8 +59,8 @@ for place = 1 : places
     Stemp(place).Xcleaned_compounds = S(place).Xcleaned_compounds(num_meas,:);
     [~,i] = ismember(Stemp(place).Xcleaned_compounds(:,1),parametersenhunparametergroepen(:,1));
     Stemp(place).Xcleaned_compounds(:,4) = parametersenhunparametergroepen(i,4);
-    [V,N,X] = unique(StempLobith.Xcleaned_compounds(:,4));
-    V(:,2) = num2cell(histc(X,1:length(N)));
+    %[V,N,X] = unique(StempLobith.Xcleaned_compounds(:,4));
+    %V(:,2) = num2cell(histc(X,1:length(N)));
     %Stemp(place).Xpcaia = knnW3timeLag(Stemp(place).X,20,4,6);
 end
 
