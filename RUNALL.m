@@ -23,3 +23,5 @@ if(exist('S_HighDensity') ~= 1) %skip this step if we want to avoid long computa
 end
 
 [ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC );
+
+plot_pca(S_HighDensity);

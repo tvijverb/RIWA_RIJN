@@ -37,12 +37,12 @@ low = S_HighDensity_ReducedData(i).XdivPNEC < 1;
 
 %Plot sumlog - summation over all compounds - logscale (Not Available
 %compounds are set to 0 (log(1) = 0))
-figure(1);
+%figure(1);
 %XdevPNECsum = sum(log(S_HighDensity_ReducedData.XdivPNEC'));
 S_HighDensity_ReducedData(i).XdevPNECsum = S_HighDensity_ReducedData.XdivPNEC;
 %plot(XdevPNECsum);
 
-figure(2);
+%figure(2);
 %XdevPNECsum_avail_compounds_wPNEC = sum(log(S_HighDensity_ReducedData.XdivPNEC(:,S_HighDensity_ReducedData.avail_compounds)'));
 S_HighDensity_ReducedData(i).XdevPNECsum_avail_compounds_wPNEC = S_HighDensity_ReducedData.XdivPNEC(:,S_HighDensity_ReducedData.avail_compounds);
 %plot(XdevPNECsum_avail_compounds_wPNEC);
