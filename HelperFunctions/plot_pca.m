@@ -5,9 +5,12 @@ function [ ] = plot_pca( S_HighDensity )
 b{2} = vertcat(S_HighDensity.Xcleaned_compounds(:,2));
 b{1} = vertcat(S_HighDensity.Xcleaned_timepoints(:,1));
 
-varLimiter = 0.02;
+varLimiter = 1;
 new_color = [0,0,0];
-pca_visualization(S_HighDensity.XX,b,varLimiter,new_color);
+Xmncn = nanmean2(S_HighDensity.XX);
+Xauto = nanstd(Xmncn);
+
+pca_visualization(Xauto,b,varLimiter,new_color);
 
 end
 

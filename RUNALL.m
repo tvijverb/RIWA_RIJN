@@ -7,21 +7,25 @@
 %%
 % Load dataset to workspace
 % Skips load function if data is already in workspace
-if(exist('StempLobith') ~= 1)
-    load('StempLobith.mat');
-end
 if(exist('Slobith') ~= 1)
     load('SLobith.mat');
 end
 if(exist('PNEC') ~= 1)
     load('PNEC.mat');
 end
-PNEC = fillPNEC_Table(PNEC);
-
-if(exist('S_HighDensity') ~= 1) %skip this step if we want to avoid long computation times
-    [ S_HighDensity ] = data_filter( StempLobith ,Slobith);
+if(exist('parametersenhunparametergroepen') ~= 1)
+    load('parametergroups.mat');
 end
 
-[ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC );
+
+PNEC = fillPNEC_Table(PNEC);
+
+[ Slobith ] = data_compression( Slobith,parametersenhunparametergroepen );
+
+if(exist('S_HighDensity') ~= 1) %skip this step if we want to avoid long computation times
+    [ S_HighDensity ] = data_imputation(Slobith);
+end
+
+[ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC )
 
 plot_pca(S_HighDensity);

@@ -1,8 +1,8 @@
-function [ Stemp ] = Compressed_Data( S,parametersenhunparametergroepen )
+function [ S ] = data_compression( S,parametersenhunparametergroepen )
 %COMPRESSED_DATA Summary of this function goes here
 %   Detailed explanation goes here
-min_number_of_p_values = 1;
-min_number_of_r_values = 1;
+min_number_of_p_values = 100;
+min_number_of_r_values = 100;
 
 
 places = length(S);
@@ -21,9 +21,6 @@ for place = 1 : places
     
     % Measurements to keep
     for row = 1 : rows
-        if(row == 2031)
-            disp('nom');
-        end
         notnan2(row) = sum(~isnan(S(place).Xcleaned(row,:)));
     end
     
@@ -44,24 +41,24 @@ for place = 1 : places
     notnan4 = logical(notnan4);
 
     % Copy data
-    Stemp(place).X = S(place).Xcleaned(notnan4,notnan);
+    S(place).X = S(place).Xcleaned(notnan4,notnan);
     
     % Copy measurement metadata
-    Stemp(place).Xcleaned_timepoints = S(place).Xcleaned_timepoints(notnan4,:);
+    S(place).Xcleaned_timepoints = S(place).Xcleaned_timepoints(notnan4,:);
  
     % Copy variables metadata
-    Stemp(place).Xcleaned_compounds = S(place).Xcleaned_compounds(notnan,:);
+    S(place).Xcleaned_compounds = S(place).Xcleaned_compounds(notnan,:);
 
     % Last check
-    num_meas = sum(~isnan(Stemp(place).X));
+    num_meas = sum(~isnan(S(place).X));
     num_meas = num_meas > 10;
-    Stemp(place).X = Stemp(place).X(:,num_meas);
-    Stemp(place).Xcleaned_compounds = S(place).Xcleaned_compounds(num_meas,:);
-    [~,i] = ismember(Stemp(place).Xcleaned_compounds(:,1),parametersenhunparametergroepen(:,1));
-    Stemp(place).Xcleaned_compounds(:,4) = parametersenhunparametergroepen(i,4);
-    %[V,N,X] = unique(StempLobith.Xcleaned_compounds(:,4));
+    S(place).X = S(place).X(:,num_meas);
+    S(place).Xcleaned_compounds = S(place).Xcleaned_compounds(num_meas,:);
+    [~,i] = ismember(S(place).Xcleaned_compounds(:,1),parametersenhunparametergroepen(:,1));
+    S(place).Xcleaned_compounds(:,4) = parametersenhunparametergroepen(i,4);
+    %[V,N,X] = unique(SLobith.Xcleaned_compounds(:,4));
     %V(:,2) = num2cell(histc(X,1:length(N)));
-    %Stemp(place).Xpcaia = knnW3timeLag(Stemp(place).X,20,4,6);
+    %S(place).Xpcaia = knnW3timeLag(S(place).X,20,4,6);
 end
 
 end

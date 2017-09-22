@@ -32,6 +32,6 @@ for k = -maxlags:maxlags
         tempCrossCov = nanmean((Y(1:y_len + k) - y_mean).* (X(1-k:x_len) - x_mean));
     end
     cross_cov(k+maxlags+1) = tempCrossCov;
-    c(k+maxlags+1) = tempCrossCov/(x_std*y_std);
+    c(k+maxlags+1) = tempCrossCov/(x_std'*y_std);
 end
 end

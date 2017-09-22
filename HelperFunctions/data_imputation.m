@@ -1,4 +1,4 @@
-function [ S_HighDensity_ReducedData ] = data_filter( Stemp ,S)
+function [ S_HighDensity_ReducedData ] = data_imputation(S)
 %% Created by Thomas Vijverberg on 04-09-2017 at Radboud University Nijmegen
 % Last edited by Thomas Vijverberg on 04-09-2017
 
@@ -16,16 +16,16 @@ maxdate = '01-Jan-2015 00:00:00';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('Running data_filter - Replace missing values PNEC');
 
-places = length(Stemp);
+places = length(S);
 
 disp('Meancenter and autoscale for all locations:');
 for place = 1 : places
     disp(['Meancenter and autoscale at: ', num2str(place), ' of ',num2str(places),'.']);
-    [r,c] = size(Stemp(place).X);
-    [S_HighDensity_ReducedData(place).XmeancenteredData,S_HighDensity_ReducedData(place).XmeancenteredColumns] = nanmean2(Stemp(place).X);
-    [S_HighDensity_ReducedData(place).Xstdx,S_HighDensity_ReducedData(place).Xstd,S_HighDensity_ReducedData(place).Xkeepo] = nanstd(S_HighDensity_ReducedData(place).XmeancenteredData,1);
-    S_HighDensity_ReducedData(place).Xcleaned_compounds = Stemp(place).Xcleaned_compounds(S_HighDensity_ReducedData(place).Xkeepo,:);
-    S_HighDensity_ReducedData(place).Xcleaned_timepoints = Stemp(place).Xcleaned_timepoints;
+    [r,c] = size(S(place).X);
+    [S_HighDensity_ReducedData(place).XmeancenteredData,S_HighDensity_ReducedData(place).XmeancenteredColumns] = nanmean2(S(place).X);
+    [S_HighDensity_ReducedData(place).Xstdx,S_HighDensity_ReducedData(place).Xstd,S_HighDensity_ReducedData(place).Xkeepo] = nanstd(S_HighDensity_ReducedData(place).XmeancenteredData);
+    S_HighDensity_ReducedData(place).Xcleaned_compounds = S(place).Xcleaned_compounds(S_HighDensity_ReducedData(place).Xkeepo,:);
+    S_HighDensity_ReducedData(place).Xcleaned_timepoints = S(place).Xcleaned_timepoints;
     
     % Imputation Algorithm over meancentered data - limitation of PCA
     % method
