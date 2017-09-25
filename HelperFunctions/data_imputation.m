@@ -18,6 +18,8 @@ disp('Running data_filter - Replace missing values PNEC');
 
 places = length(S);
 
+S_HighDensity_ReducedData = S;
+
 disp('Meancenter and autoscale for all locations:');
 for place = 1 : places
     disp(['Meancenter and autoscale at: ', num2str(place), ' of ',num2str(places),'.']);
@@ -29,27 +31,28 @@ for place = 1 : places
     
     % Imputation Algorithm over meancentered data - limitation of PCA
     % method
-    S_HighDensity_ReducedData(place).X = msvd(S_HighDensity_ReducedData(place).Xstdx,4);
+    S_HighDensity_ReducedData(place).Ximputed = msvd(S_HighDensity_ReducedData(place).Xstdx,12);
     
     % Set imputed data back to original space (meancentered * std) + column
     % mean
-    S_HighDensity_ReducedData(place).XX = S_HighDensity_ReducedData(place).X * diag(S_HighDensity_ReducedData(place).Xstd) + repmat(S_HighDensity_ReducedData(place).XmeancenteredColumns(S_HighDensity_ReducedData(place).Xkeepo),[1,r])';
+    S_HighDensity_ReducedData(place).XXimputed = S_HighDensity_ReducedData(place).Ximputed * diag(S_HighDensity_ReducedData(place).Xstd) + repmat(S_HighDensity_ReducedData(place).XmeancenteredColumns(S_HighDensity_ReducedData(place).Xkeepo),[1,r])';
+    S_HighDensity_ReducedData(place).XXnotimputed = S(place).X(:,S_HighDensity_ReducedData.Xkeepo);
 end
 
-disp('Removing timepoints outside "mindate" and "maxdate". ');
-for place = 1 : places
-    disp(['Removing timepoints at: ', num2str(place), ' of ',num2str(places),'.']);
-    rows = length(S(place).X);
-    notnan = [];
-    for row = 1 : rows
-            if(S(place).X{row,4} > datenum(mindate) && S(place).X{row,4} < datenum(maxdate) && ismember(S(place).X{row,5},S_HighDensity_ReducedData(place).Xcleaned_compounds(:,1)))
-                notnan(1,row) = 1;
-            else
-                notnan(1,row) = 0;
-            end
-    end
-    S_HighDensity_ReducedData(place).Xo = S(place).X(logical(notnan),:);
-end
-
+% disp('Removing timepoints outside "mindate" and "maxdate". ');
+% for place = 1 : places
+%     disp(['Removing timepoints at: ', num2str(place), ' of ',num2str(places),'.']);
+%     [rows,columns] = size(S_HighDensity_ReducedData(place).Ximputed);
+%     notnan = [];
+%     for row = 1 : rows
+%             if(S_HighDensity_ReducedData(place).X{row,4} > datenum(mindate) && S_HighDensity_ReducedData(place).Ximputed{row,4} < datenum(maxdate) && ismember(S_HighDensity_ReducedData(place).Ximputed{row,5},S_HighDensity_ReducedData(place).Xcleaned_compounds(:,1)))
+%                 notnan(1,row) = 1;
+%             else
+%                 notnan(1,row) = 0;
+%             end
+%     end
+%     S_HighDensity_ReducedData(place).Xo = S(place).Ximputed(logical(notnan),:);
+% end
+S_HighDensity_ReducedData(1).Xo = S_HighDensity_ReducedData(1).XXimputed;
 end
 

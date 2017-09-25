@@ -7,7 +7,7 @@ b{1} = vertcat(S_HighDensity.Xcleaned_timepoints(:,1));
 
 varLimiter = 1;
 new_color = [0,0,0];
-Xmncn = nanmean2(S_HighDensity.XX);
+Xmncn = nanmean2(S_HighDensity.XXimputed);
 Xauto = nanstd(Xmncn);
 
 pca_visualization(Xauto,b,varLimiter,new_color);

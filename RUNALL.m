@@ -9,6 +9,7 @@
 % Skips load function if data is already in workspace
 if(exist('Slobith') ~= 1)
     load('SLobith.mat');
+    Slobith2 = Slobith;
 end
 if(exist('PNEC') ~= 1)
     load('PNEC.mat');
@@ -17,6 +18,7 @@ if(exist('parametersenhunparametergroepen') ~= 1)
     load('parametergroups.mat');
 end
 
+Slobith = Slobith2;
 
 PNEC = fillPNEC_Table(PNEC);
 
@@ -29,3 +31,5 @@ end
 [ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC )
 
 plot_pca(S_HighDensity);
+
+plot_true_imputed(S_HighDensity);
