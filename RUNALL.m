@@ -28,7 +28,7 @@ if(exist('S_HighDensity') ~= 1) %skip this step if we want to avoid long computa
     [ S_HighDensity ] = data_imputation(Slobith);                           % data imputation algorithm based on PCA-IA
 end
 
-[ S_HighDensity ] = data_selfpredict_imputation(S_HighDensity);             % variable self-predict capability with imputation. What is the performance of PCA-IA per variable. 
+%[ S_HighDensity ] = data_selfpredict_imputation(S_HighDensity);             % variable self-predict capability with imputation. What is the performance of PCA-IA per variable. 
 
 [ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC );                    % toxicity subroutine divide known data by PNEC -> logscale -> sum -> plot
 

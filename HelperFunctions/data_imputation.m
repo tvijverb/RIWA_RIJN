@@ -25,7 +25,7 @@ for place = 1 : places
     disp(['Meancenter and autoscale at: ', num2str(place), ' of ',num2str(places),'.']);
     [r,c] = size(S(place).X);
     [S_HighDensity_ReducedData(place).XmeancenteredData,S_HighDensity_ReducedData(place).XmeancenteredColumns] = nanmean2(S(place).X);
-    [S_HighDensity_ReducedData(place).Xstdx,S_HighDensity_ReducedData(place).Xstd,S_HighDensity_ReducedData(place).Xkeepo] = nanstd(S_HighDensity_ReducedData(place).XmeancenteredData);
+    [S_HighDensity_ReducedData(place).Xstdx,S_HighDensity_ReducedData(place).Xstd,S_HighDensity_ReducedData(place).Xkeepo] = nanstd2(S_HighDensity_ReducedData(place).XmeancenteredData);
     S_HighDensity_ReducedData(place).Xcleaned_compounds = S(place).Xcleaned_compounds(S_HighDensity_ReducedData(place).Xkeepo,:);
     S_HighDensity_ReducedData(place).Xcleaned_timepoints = S(place).Xcleaned_timepoints;
     

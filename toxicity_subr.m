@@ -38,6 +38,8 @@ for i = 1:1
     end
 end
 
+S_HighDensity_ReducedData.PNEC_compounds = S_HighDensity_ReducedData.Xcleaned_compounds(S_HighDensity_ReducedData.avail_compounds,:);
+
 %Set unknown compounds to 1
 low = S_HighDensity_ReducedData(i).XdivPNEC < 1;
 S_HighDensity_ReducedData(i).XdivPNEC(low) = 1;
@@ -51,7 +53,7 @@ plot(XdevPNECsum);
 
 %figure(2);
 %XdevPNECsum_avail_compounds_wPNEC = sum(log(S_HighDensity_ReducedData.XdivPNEC(:,S_HighDensity_ReducedData.avail_compounds)'));
-S_HighDensity_ReducedData(i).XdevPNECsum_avail_compounds_wPNEC = S_HighDensity_ReducedData.XdivPNEC(:,S_HighDensity_ReducedData.avail_compounds);
+S_HighDensity_ReducedData(i).XdevPNECsum_log_avail_compounds_wPNEC = log(S_HighDensity_ReducedData.XdivPNEC(:,S_HighDensity_ReducedData.avail_compounds));
 %plot(XdevPNECsum_avail_compounds_wPNEC);
 
 end

@@ -5,7 +5,7 @@ function [X] = msvd( X,fn,conv,maxiter )
 if nargin < 4
     
     conv = 1e-10;
-    maxiter = 1000;
+    maxiter = 100;
 end
 center = 1;
 
