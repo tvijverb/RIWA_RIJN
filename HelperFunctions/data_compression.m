@@ -1,8 +1,8 @@
 function [ S ] = data_compression( S,parametersenhunparametergroepen )
 %COMPRESSED_DATA Summary of this function goes here
 %   Detailed explanation goes here
-min_number_of_p_values = 1;
-min_number_of_r_values = 1;
+min_number_of_p_values = 100;
+min_number_of_r_values = 100;
 
 
 places = length(S);

@@ -22,14 +22,20 @@ Slobith = Slobith2;
 
 PNEC = fillPNEC_Table(PNEC);
 
-[ Slobith ] = data_compression( Slobith,parametersenhunparametergroepen );
+[ Slobith ] = data_compression( Slobith,parametersenhunparametergroepen );  % reduces datasize by removing (near) empty rows and columns according to user settings.
 
 if(exist('S_HighDensity') ~= 1) %skip this step if we want to avoid long computation times
-    [ S_HighDensity ] = data_imputation(Slobith);
+    [ S_HighDensity ] = data_imputation(Slobith);                           % data imputation algorithm based on PCA-IA
 end
 
-[ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC )
+[ S_HighDensity ] = data_selfpredict_imputation(S_HighDensity);             % variable self-predict capability with imputation. What is the performance of PCA-IA per variable. 
 
-plot_pca(S_HighDensity);
+[ S_HighDensity ] = toxicity_subr( S_HighDensity,PNEC );                    % toxicity subroutine divide known data by PNEC -> logscale -> sum -> plot
 
-plot_true_imputed(S_HighDensity);
+%plot_pca(S_HighDensity);
+
+%draw_missings_heatmap( S_HighDensity );
+
+%plot_true_imputed(S_HighDensity);
+
+%plot_covariance;

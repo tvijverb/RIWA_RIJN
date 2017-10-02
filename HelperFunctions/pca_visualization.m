@@ -1,6 +1,13 @@
-function [] = pca_visualization(inputMatrix,inputLabels,varLimiter,new_color)
-
+function [] = pca_visualization(inputMatrix,inputLabels,timeLabels,varLimiter,new_color,plot_scr,plot_lds)
+figure(2);
+hold on;
 data = inputMatrix';
+
+arrowcolor = new_color;
+textcolor = new_color;
+textfontsize=24 ;
+%textFontWeight='bold';
+
 
 [r,c]=size(data);
 
@@ -51,132 +58,142 @@ Weight_3D=sum(SumEigvale(1:3))/sum(SumEigvale);
 % The first class (Setosa) in red, the second class (Versicolour) in blue, and the third class (Virginica) in
 % green
 
-plot(Data_2D(1,:),Data_2D(2,:),'rd'...
-    ,'MarkerFaceColor','r','MarkerSize',3); %hold on
-%plot(Data_2D(1,51:100),Data_2D(2,51:100),'bd'...
-%    ,'MarkerFaceColor','b'); hold on
-%plot(Data_2D(1,101:150),Data_2D(2,101:150),'gd'...
-%    ,'MarkerFaceColor','g')
-hold on;
-xlabel('First Principal Component (PC1)');
-ylabel('Second Principal Component (PC2)');
 
-LDS =eigvector(:,1:2);
-SampleNamesVariableNames = inputLabels;
+if(plot_scr)
+    plot(Data_2D(1,:),Data_2D(2,:),'rd'...
+        ,'MarkerFaceColor','r','MarkerSize',3); 
+
+
+    scorelength = sqrt(Data_2D(1,:).^2+Data_2D(1,:));
+    [~,arrowSortIndex] = sort(scorelength,'descend');
+    keepthis = round(varLimiter * length(scorelength));
+    scoreSortIndex = arrowSortIndex(1:keepthis);
+    N_var = length(scoreSortIndex);
+    DATA_2D = Data_2D(:,scoreSortIndex);
+    sortedTimeLabels = timeLabels(scoreSortIndex);
+
+    for i = 1 : length(DATA_2D(1,:))
+        text(DATA_2D(1,i),DATA_2D(2,i),sortedTimeLabels{i}(1:end-9),'FontSize',textfontsize);
+    end
+
+    %hold on
+    %plot(Data_2D(1,51:100),Data_2D(2,51:100),'bd'...
+    %    ,'MarkerFaceColor','b'); hold on
+    %plot(Data_2D(1,101:150),Data_2D(2,101:150),'gd'...
+    %    ,'MarkerFaceColor','g')
+    hold on;
+    LDS =eigvector(:,1:2);
+    SampleNamesVariableNames = inputLabels;
+
+end
 
 %% set standard parameters
+if(plot_lds)
+    SampleNames = SampleNamesVariableNames{1};
+    VariableNames = SampleNamesVariableNames{2};
 
-SampleNames = SampleNamesVariableNames{1};
-VariableNames = SampleNamesVariableNames{2};
-
-if isa(LDS,'single'); LDS=double(LDS);end % because the <text> can only handle double precision.
-axishandle=get(gcf,'CurrentAxes');
-if nargin<2 || isempty(VariableNames);
-   A=size(LDS,1); VariableNames={['v' num2str(1)]};
-   for L1=2:A;
-      VariableNames(end+1)={['v' num2str(L1)]};
-   end
-end
-if size(LDS,1)~=length(VariableNames);
-   %    disp('ERROR: LDS size - Variable size MISMATCH');
-   if size(LDS,1)<length(VariableNames);
-      VariableNames=VariableNames(1:size(LDS,1));
-   else
-      return
-   end
-end;
-arrowcolor=[0.2 .8 0.2];
-textcolor=[0.2 .8 0.2] ;
-textfontsize=10 ;
-textFontWeight='bold';
-
-if nargin <2
-    varLimiter = 1;
-    arrowcolor=new_color; 
-    textcolor=arrowcolor;
-elseif nargin<3; 
-    arrowcolor=new_color; 
-    textcolor=arrowcolor;
-else new_color=arrowcolor;
-end
-%% determining scale
-[axisrange] = axis(axishandle);
-scaler(1)=(axisrange(1,1))/(-abs(min(LDS(:,1))));
-scaler(2)=(axisrange(1,2))/max(LDS(:,1));
-scaler(3)=(axisrange(1,3))/(-abs(min(LDS(:,2))));
-scaler(4)=(axisrange(1,4))/max(LDS(:,2));
-if length(LDS(1,:)) == 3;
-    scaler(5)=(axisrange(1,3))/(-abs(min(LDS(:,3))));
-    scaler(6)=(axisrange(1,4))/max(LDS(:,3));
-end
-scaler = min(abs(scaler))*1 ;
-LDS_forplot=LDS.*scaler;
-figure(1)
-%% plottign arrows / text
-N_var=size(LDS,1);
-if length(LDS(1,:)) <= 2;
-    
-    arrowlength = sqrt(LDS_forplot(:,1).^2+LDS_forplot(:,2));
-    [arrowLength_sort,arrowSortIndex] = sort(arrowlength,'descend');
-    keepthis = round(varLimiter * length(arrowlength));
-    arrowSortIndex = arrowSortIndex(1:keepthis);
-    N_var = length(arrowSortIndex);
-    LDS_forplot = LDS_forplot(arrowSortIndex,:);
-    for L1=1:N_var
-       if size(new_color,1)>2
-          arrowcolor=new_color(L1,:); textcolor=arrowcolor;
+    if isa(LDS,'single'); LDS=double(LDS);end % because the <text> can only handle double precision.
+    axishandle=get(gcf,'CurrentAxes');
+    if nargin<2 || isempty(VariableNames);
+       A=size(LDS,1); VariableNames={['v' num2str(1)]};
+       for L1=2:A;
+          VariableNames(end+1)={['v' num2str(L1)]};
        end
-       LDS_quiver(L1,:)=quiver(0,0,LDS_forplot(L1,1),LDS_forplot(L1,2),1,'color',arrowcolor, 'linewidth', 2);
-       if LDS_forplot(L1,1) > 0
-          horzalignment='left';
-       else
-          horzalignment='right';
-       end
-       if abs(LDS_forplot(L1,1)/LDS_forplot(L1,2)) > 1
-          vertalignment='middle';
-       elseif LDS_forplot(L1,2) > 0
-          vertalignment='top';
-       else
-          vertalignment='bottom';
-       end
-       LDS_text=text(LDS_forplot(L1,1),LDS_forplot(L1,2),VariableNames{L1},'HorizontalAlignment',horzalignment,'VerticalAlignment',vertalignment,'fontsize',textfontsize,'color',textcolor,'FontWeight',textFontWeight) ;
     end
-    
-elseif length(LDS(1,:)) == 3;
-   for L1=1:N_var
-       if size(new_color,1)>2
-          arrowcolor=new_color(L1,:); textcolor=arrowcolor;
-       end
-       LDS_quiver(L1,:)=quiver3(0,0,0,LDS_forplot(L1,1),LDS_forplot(L1,2),LDS_forplot(L1,3),1,'color',arrowcolor, 'linewidth', 2);
-       if LDS_forplot(L1,1) > 0
-          horzalignment='left';
+    if size(LDS,1)~=length(VariableNames);
+       %    disp('ERROR: LDS size - Variable size MISMATCH');
+       if size(LDS,1)<length(VariableNames);
+          VariableNames=VariableNames(1:size(LDS,1));
        else
-          horzalignment='right';
+          return
        end
-       if abs(LDS_forplot(L1,1)/LDS_forplot(L1,2)) > 1
-          vertalignment='middle';
-       elseif LDS_forplot(L1,2) > 0
-          vertalignment='top';
-       else
-          vertalignment='bottom';
-       end
-       LDS_text=text(LDS_forplot(L1,1),LDS_forplot(L1,2),LDS_forplot(L1,3),VariableNames{L1},'HorizontalAlignment',horzalignment,'VerticalAlignment',vertalignment,'fontsize',textfontsize,'color',textcolor,'FontWeight',textFontWeight) ;
-   end
-%legend('Setosa','Versicolour','Virginica')
+    end;
 
-% Visualize the data in three dimensional space
-% The first class (Setosa) in red, the second class (Versicolour) in blue, and the third class (Virginica) in
-% green
-% figure(2),
-% scatter3(Data_3D(1,1:50),Data_3D(2,1:50),...
-%     Data_3D(3,1:50),'rd','MarkerFaceColor','r'); hold on
-% scatter3(Data_3D(1,51:100),Data_3D(2,51:100),...
-%     Data_3D(3,51:100),'bd','MarkerFaceColor','b'); hold on
-% scatter3(Data_3D(1,101:150),Data_3D(2,101:150),...
-%     Data_3D(3,101:150),'gd','MarkerFaceColor','g')
-% xlabel('First Principal Component (PC1)')
-% ylabel('Second Principal Component (PC2)')
-% zlabel('Third Principal Component (PC3)')
-% legend('Setosa','Versicolour','Virginica')
+
+    if nargin <2
+        varLimiter = 1;
+        arrowcolor=new_color; 
+        textcolor=arrowcolor;
+    elseif nargin<3; 
+        arrowcolor=new_color; 
+        textcolor=arrowcolor;
+    else new_color=arrowcolor;
+    end
+    %% determining scale
+    [axisrange] = axis(axishandle);
+    scaler(1)=(axisrange(1,1))/(-abs(min(LDS(:,1))));
+    scaler(2)=(axisrange(1,2))/max(LDS(:,1));
+    scaler(3)=(axisrange(1,3))/(-abs(min(LDS(:,2))));
+    scaler(4)=(axisrange(1,4))/max(LDS(:,2));
+    if length(LDS(1,:)) == 3;
+        scaler(5)=(axisrange(1,3))/(-abs(min(LDS(:,3))));
+        scaler(6)=(axisrange(1,4))/max(LDS(:,3));
+    end
+    scaler = min(abs(scaler))*1 ;
+    LDS_forplot=LDS.*scaler;
+    %% plottign arrows / text
+    N_var=size(LDS,1);
+    if length(LDS(1,:)) <= 2;
+
+        arrowlength = sqrt(LDS_forplot(:,1).^2+LDS_forplot(:,2));
+        [arrowLength_sort,arrowSortIndex] = sort(arrowlength,'descend');
+        keepthis = round(varLimiter * length(arrowlength));
+        arrowSortIndex = arrowSortIndex(1:keepthis);
+        N_var = length(arrowSortIndex);
+        LDS_forplot = LDS_forplot(arrowSortIndex,:);
+        for L1=1:N_var
+           if size(new_color,1)>2
+              arrowcolor=new_color(L1,:); textcolor=arrowcolor;
+           end
+           LDS_quiver(L1,:)=quiver(0,0,LDS_forplot(L1,1),LDS_forplot(L1,2),1,'color',arrowcolor, 'linewidth', 2);
+           if LDS_forplot(L1,1) > 0
+              horzalignment='left';
+           else
+              horzalignment='right';
+           end
+           if abs(LDS_forplot(L1,1)/LDS_forplot(L1,2)) > 1
+              vertalignment='middle';
+           elseif LDS_forplot(L1,2) > 0
+              vertalignment='top';
+           else
+              vertalignment='bottom';
+           end
+           LDS_text=text(LDS_forplot(L1,1),LDS_forplot(L1,2),VariableNames{L1},'HorizontalAlignment',horzalignment,'VerticalAlignment',vertalignment,'fontsize',textfontsize,'color',textcolor);
+        end
+
+    elseif length(LDS(1,:)) == 3;
+       for L1=1:N_var
+           if size(new_color,1)>2
+              arrowcolor=new_color(L1,:); textcolor=arrowcolor;
+           end
+           LDS_quiver(L1,:)=quiver3(0,0,0,LDS_forplot(L1,1),LDS_forplot(L1,2),LDS_forplot(L1,3),1,'color',arrowcolor, 'linewidth', 2);
+           if LDS_forplot(L1,1) > 0
+              horzalignment='left';
+           else
+              horzalignment='right';
+           end
+           if abs(LDS_forplot(L1,1)/LDS_forplot(L1,2)) > 1
+              vertalignment='middle';
+           elseif LDS_forplot(L1,2) > 0
+              vertalignment='top';
+           else
+              vertalignment='bottom';
+           end
+           LDS_text=text(LDS_forplot(L1,1),LDS_forplot(L1,2),LDS_forplot(L1,3),VariableNames{L1},'HorizontalAlignment',horzalignment,'VerticalAlignment',vertalignment,'fontsize',textfontsize,'color',textcolor,'FontWeight',textFontWeight) ;
+       end
+    end
 end
+xlim([-40 40]);
+ylim([-30 30]);
+grid on;
+yt = get(gca, 'YTick');
+set(gca, 'FontSize', 30);
+xt = get(gca, 'XTick');
+set(gca, 'FontSize', 30);
+xlabel('Principal Component 1','FontSize',40);
+ylabel('Principal Component 2','FontSize', 40);
+set(gcf, 'Position', get(0, 'Screensize'));
+%rescalefig1080;
+fig2plotly(gcf,'strip',false);
+
 end

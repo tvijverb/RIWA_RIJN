@@ -6,7 +6,7 @@ function [ ] = plot_true_imputed( S_HighDensity )
 % Plot true values over imputed graph
 
 % Which columns do you want in the plot:
-rowsToPlot = [3 5 7];
+rowsToPlot = [165];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,7 +18,7 @@ hold on;
 
 sum_mi = 0;
 for i = 1 : length(rowsToPlot)
-    plot(S_HighDensity.XXimputed(:,rowsToPlot(i)));
+    scatter(xval,S_HighDensity.XXimputed(:,rowsToPlot(i)));
     
     notnanData = ~isnan(S_HighDensity.XXnotimputed(:,rowsToPlot(i)));
     thisX = xval(notnanData);
@@ -29,9 +29,24 @@ end
 
 disp(['Number of missings: ', num2str(sum_mi), ' .This is ', num2str(sum_mi/(r*length(rowsToPlot))*100) '% of the data.'])
 
-title('Lobith 2010-2015')
-xlabel('timepoints');
-ylabel('concentration ug/L')
+title([S_HighDensity.Xcleaned_compounds{rowsToPlot,2},' Lobith 2010-2015'])
+xlabel('timepoints','FontSize',40);
+ylabel('concentration ug/L','FontSize',40);
+yt = get(gca, 'YTick');
+set(gca, 'FontSize', 30);
+xt = get(gca, 'XTick');
+set(gca, 'FontSize', 30);
+yl = ylim;
+
+yl(1) = 0;
+ylim(yl);
+
+%rescalefig1080;
+layout = struct(...
+    'xaxis', struct('range', [2, 5]), ...
+    'yaxis', struct('range', [2, 5]));
+
+fig2plotly(gcf,'layout',layout,'axes-range-manual',true,'overwrite',true);
 
 %% legend preparation
 legendCellMatrix = repmat(S_HighDensity.Xcleaned_compounds(rowsToPlot,2),1,2);

@@ -1,0 +1,14 @@
+figure(4);
+a = cov(S_HighDensity.Ximputed);
+a(logical(eye(size(a)))) = 1;
+imagesc(a);
+colormap(hot);
+rescalefig1080;
+%set(gca,'YDir','normal');
+yt = get(gca, 'YTick');
+set(gca, 'FontSize', 30);
+xt = get(gca, 'XTick');
+set(gca, 'FontSize', 30);
+ylabel('variables (chemicals)','FontSize',40);
+xlabel('variables (chemicals)','FontSize', 40);
+fig2plotly(gcf,'strip',false);
