@@ -18,6 +18,8 @@ function [ knn,pca,oplsda ] = Benchmark_imputation( )
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+remove_num = 15;
+
 %% Run 500 times
 for zz  = 1 : 100
     %% Generate simulation data
@@ -49,7 +51,7 @@ for zz  = 1 : 100
     X = [X1 X2 X3 X4 X5 X6 X7 X8 X9 X10 X11];
     Ystd = std(Y);
     %% Remove 15 random indices
-    removed_index = randi([1 60],15,1);
+    removed_index = randi([1 60],remove_num,1);
     removed_Y1 = Y1(removed_index);
     removed_Y2 = Y2(removed_index);
     removed_Y3 = Y3(removed_index);
@@ -81,9 +83,9 @@ for zz  = 1 : 100
     tic
     
     
-    k = 10;
-    kk = 4;
-    kkk = 2;
+    k = 100;
+    kk = 10;
+    kkk = 4;
     
     Xknn1 = [X1 Y1];
     Xknn2 = [X2 Y2];
@@ -123,9 +125,12 @@ for zz  = 1 : 100
     
     Yknn = [Yknn1 Yknn2 Yknn3 Yknn4 Yknn5 Yknn6 Yknn7 Yknn8 Yknn9 Yknn10 Yknn11];
     
-    Yknndiff = ( Ymiss - Yknn ) ./ repmat(Ystd,15,1);
+    Yknndiff = ( Ymiss - Yknn ) ./ repmat(Ystd,remove_num,1);
     Yknndiff = reshape(Yknndiff,1,[]);
-    knn(zz,:) = [mean(Yknndiff) std(Yknndiff)];
+    YknnMSE = (Ymiss - Yknn).^2 ./ remove_num ./ repmat(Ystd,remove_num,1);
+    
+    
+    knn(zz,:) = [mean(Yknndiff) std(Yknndiff) mean(mean(YknnMSE))];
     toc
     
     %% PCA-IA imputation
@@ -171,9 +176,11 @@ for zz  = 1 : 100
         
         Ypca = [Ypca1 Ypca2 Ypca3 Ypca4 Ypca5 Ypca6 Ypca7 Ypca8 Ypca9 Ypca10 Ypca11];
         
-        Ypcadiff = ( Ymiss - Ypca ) ./ repmat(Ystd,15,1);
+        Ypcadiff = ( Ymiss - Ypca ) ./ repmat(Ystd,remove_num,1);
+        YpcaMSE = (Ymiss - Ypca).^2 ./ remove_num ./ repmat(Ystd,remove_num,1);
+        
         Ypcadiff = reshape(Ypcadiff,1,[]);
-        pca(zz,i,:) = [mean(Ypcadiff) std(Ypcadiff)];
+        pca(zz,i,:) = [mean(Ypcadiff) std(Ypcadiff) mean(mean(YpcaMSE))];
     end
     
     toc
@@ -283,9 +290,11 @@ for zz  = 1 : 100
     
     Yoplsda = [Yoplsda1' Yoplsda2' Yoplsda3' Yoplsda4' Yoplsda5' Yoplsda6' Yoplsda7' Yoplsda8' Yoplsda9' Yoplsda10' Yoplsda11'];
     
-    Yoplsdadiff = ( Ymiss - Yoplsda ) ./ repmat(Ystd,15,1);
+    Yoplsdadiff = ( Ymiss - Yoplsda ) ./ repmat(Ystd,remove_num,1);
+    YoplsMSE = (Ymiss - Yoplsda).^2 ./ remove_num ./ repmat(Ystd,remove_num,1);
+    
     Yoplsdadiff = reshape(Yoplsdadiff,1,[]);
-    oplsda(zz,:) = [mean(Yoplsdadiff) std(Yoplsdadiff)];
+    oplsda(zz,:) = [mean(Yoplsdadiff) std(Yoplsdadiff) mean(mean(YoplsMSE))];
     
     % figure
     % plot(mncn(Y11));
@@ -293,9 +302,15 @@ for zz  = 1 : 100
     % plot(yhat);
     toc
 end
-figure
-aboxplot([knn(:,2) oplsda(:,2) squeeze(pca(:,1,2)) squeeze(pca(:,2,2)) squeeze(pca(:,3,2)) squeeze(pca(:,4,2))],'labels',{'k-NN','OPLS-DA','PCA 1PC','PCA 2PCs','PCA 3PCs'});
-title('Standard Deviation simulated imputation 100 repetitions','Fontsize',24);
+figure(1)
+cmap = [0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9];
+aboxplot([knn(:,2) oplsda(:,2) squeeze(pca(:,1,2)) squeeze(pca(:,2,2)) squeeze(pca(:,3,2)) squeeze(pca(:,4,2))],'labels',{'k-NN','OPLS-DA','PCA 1PC','PCA 2PCs','PCA 3PCs','PCA 4PCs'},'colormap',cmap);
+title('Standard Deviation Imputation Error - 100 repetitions','Fontsize',24);
+
+figure(2)
+cmap = [0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9];
+aboxplot([knn(:,3) oplsda(:,3) squeeze(pca(:,1,3)) squeeze(pca(:,2,3)) squeeze(pca(:,3,3)) squeeze(pca(:,4,3))],'labels',{'k-NN','OPLS-DA','PCA 1PC','PCA 2PCs','PCA 3PCs','PCA 4PCs'},'colormap',cmap);
+title('Mean Imputation Error - 100 repetitions','Fontsize',24);
 ylabel('?','Fontsize',24);
 
 end

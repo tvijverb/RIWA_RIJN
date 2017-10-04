@@ -17,9 +17,9 @@ for i = 1 : length(S_HighDensity)
     ismat = ~isnanmat;
     S_HighDensity(i).predictvalue = zeros(size(S_HighDensity(i).Xstdx));
     for j = 1 : c
-        sum_have_column = sum(~ismat(:,c));
+        sum_have_column = sum(~ismat(:,j));
         row = 1:r;
-        rowIdx = row(~ismat(:,c));
+        rowIdx = ismat(:,j);
         for k = 1 : sum_have_column
             kk = rowIdx(k);
             predictmatrix = S_HighDensity(i).Xstdx;
@@ -27,12 +27,10 @@ for i = 1 : length(S_HighDensity)
             predictmatrix = msvd(predictmatrix,3);
             S_HighDensity(i).predictvalue(j,kk) = predictmatrix(j,kk);
         end
-        yimp = S_HighDensity(i).predictvalue(j,rowIdx);
-        yreal = S_HighDensity(i).Xstdx(j,rowIdx);
+        yimp = S_HighDensity(i).predictvalue(rowIdx,j);
+        yreal = S_HighDensity(i).Xstdx(rowIdx,j);
         S_HighDensity(i).MSE(j) = (1 / sum_have_column) * sum((yimp-yreal).^2);
-        if(mod(j,10) == 0)
-            disp(['Now at column: ',num2str(j),' of self-prediction']);
-        end
+        disp(['Now at column: ',num2str(j),' of self-prediction']);
     end
 end
 
