@@ -1,46 +1,38 @@
-function [ knn,pca,oplsda,data ] = Benchmark_imputation( )
-%% Created by Thomas Vijverberg on 19-04-2016 at Radboud University Nijmegen
-% Last edited by Thomas Vijverberg on 19-04-2016
+function [ knn,pca,oplsda,data ] = Benchmark_imputation2( )
+%% Created by Thomas Vijverberg on 05-10-2017 at Radboud University Nijmegen
+% Last edited by Thomas Vijverberg on 05-10-2017
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%INPUT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 remove_num_mat = [5 10 15 20 30 40 50 60 70 80 90];
-data_length = 100;
-repeat_n_times = 10;
+data_length = 1000;
+repeat_n_times = 100;
 
 %% Run 500 times
 for miss = 1 : length(remove_num_mat)
     remove_num = remove_num_mat(miss);
     for zz  = 1 : repeat_n_times
         %% Generate simulation data
-        [ X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11 ] = Generate_simulation_data(data_length);
+        disp(['Now at miss: ', num2str(miss), ' of ', num2str(length(remove_num_mat)), ' and repetition ', num2str(zz), ' of ', num2str(repeat_n_times)]);
+        [ X1,X2,X3,X4,X5,X6,Y1,Y2,Y3,Y4,Y5,Y6 ] = Generate_simulation_data2(data_length);
         X1 = mncn(X1);
         X2 = mncn(X2);
         X3 = mncn(X3);
         X4 = mncn(X4);
         X5 = mncn(X5);
         X6 = mncn(X6);
-        X7 = mncn(X7);
-        X8 = mncn(X8);
-        X9 = mncn(X9);
-        X10 = mncn(X10);
-        X11 = mncn(X11);
         Y1 = mncn(Y1');
         Y2 = mncn(Y2');
         Y3 = mncn(Y3');
         Y4 = mncn(Y4');
         Y5 = mncn(Y5');
         Y6 = mncn(Y6');
-        Y7 = mncn(Y7');
-        Y8 = mncn(Y8');
-        Y9 = mncn(Y9');
-        Y10 = mncn(Y10');
-        Y11 = mncn(Y11');
 
-        Y = [Y1 Y2 Y3 Y4 Y5 Y6 Y7 Y8 Y9 Y10 Y11];
-        X = [X1 X2 X3 X4 X5 X6 X7 X8 X9 X10 X11];
+        Y = [Y1 Y2 Y3 Y4 Y5 Y6];
+        X = [X1 X2 X3 X4 X5 X6];
         Ystd = std(Y);
         %% Remove 15 random indices
         removed_index = randi([1 data_length],remove_num,1);
@@ -50,13 +42,8 @@ for miss = 1 : length(remove_num_mat)
         removed_Y4 = Y4(removed_index);
         removed_Y5 = Y5(removed_index);
         removed_Y6 = Y6(removed_index);
-        removed_Y7 = Y7(removed_index);
-        removed_Y8 = Y8(removed_index);
-        removed_Y9 = Y9(removed_index);
-        removed_Y10 = Y10(removed_index);
-        removed_Y11 = Y11(removed_index);
-
-        Ymiss = [removed_Y1 removed_Y2 removed_Y3 removed_Y4 removed_Y5 removed_Y6 removed_Y7 removed_Y8 removed_Y9 removed_Y10 removed_Y11];
+        
+        Ymiss = [removed_Y1 removed_Y2 removed_Y3 removed_Y4 removed_Y5 removed_Y6];
 
         Y1(removed_index) = NaN;
         Y2(removed_index) = NaN;
@@ -64,18 +51,9 @@ for miss = 1 : length(remove_num_mat)
         Y4(removed_index) = NaN;
         Y5(removed_index) = NaN;
         Y6(removed_index) = NaN;
-        Y7(removed_index) = NaN;
-        Y8(removed_index) = NaN;
-        Y9(removed_index) = NaN;
-        Y10(removed_index) = NaN;
-        Y11(removed_index) = NaN;
-
+       
         %% k-NN imputation
-        disp('Start of k-NN imputation algorithm');
-        tic
-
-
-        k = 100;
+        k = 10;
         kk = 10;
         kkk = 4;
 
@@ -85,11 +63,7 @@ for miss = 1 : length(remove_num_mat)
         Xknn4 = [X4 Y4];
         Xknn5 = [X5 Y5];
         Xknn6 = [X6 Y6];
-        Xknn7 = [X7 Y7];
-        Xknn8 = [X8 Y8];
-        Xknn9 = [X9 Y9];
-        Xknn10 = [X10 Y10];
-        Xknn11 = [X11 Y11];
+        
 
         [Xknn1] = knnW3timeLag( Xknn1,k,kk,kkk);
         [Xknn2] = knnW3timeLag( Xknn2,k,kk,kkk);
@@ -97,38 +71,24 @@ for miss = 1 : length(remove_num_mat)
         [Xknn4] = knnW3timeLag( Xknn4,k,kk,kkk);
         [Xknn5] = knnW3timeLag( Xknn5,k,kk,kkk);
         [Xknn6] = knnW3timeLag( Xknn6,k,kk,kkk);
-        [Xknn7] = knnW3timeLag( Xknn7,k,kk,kkk);
-        [Xknn8] = knnW3timeLag( Xknn8,k,kk,kkk);
-        [Xknn9] = knnW3timeLag( Xknn9,k,kk,kkk);
-        [Xknn10] = knnW3timeLag( Xknn10,k,kk,kkk);
-        [Xknn11] = knnW3timeLag( Xknn11,k,kk,kkk);
-
+        
         Yknn1 = Xknn1(removed_index,11);
         Yknn2 = Xknn2(removed_index,11);
         Yknn3 = Xknn3(removed_index,11);
         Yknn4 = Xknn4(removed_index,11);
         Yknn5 = Xknn5(removed_index,11);
         Yknn6 = Xknn6(removed_index,11);
-        Yknn7 = Xknn7(removed_index,11);
-        Yknn8 = Xknn8(removed_index,11);
-        Yknn9 = Xknn9(removed_index,11);
-        Yknn10 = Xknn10(removed_index,11);
-        Yknn11 = Xknn11(removed_index,11);
+        
 
-        Yknn = [Yknn1 Yknn2 Yknn3 Yknn4 Yknn5 Yknn6 Yknn7 Yknn8 Yknn9 Yknn10 Yknn11];
+        Yknn = [Yknn1 Yknn2 Yknn3 Yknn4 Yknn5 Yknn6];
 
         Yknndiff = ( Ymiss - Yknn ) ./ repmat(Ystd,remove_num,1);
         Yknndiff = reshape(Yknndiff,1,[]);
-        YknnMSE = sqrt(((Ymiss - Yknn).^2)) ./ remove_num ./ repmat(Ystd,remove_num,1);
+        YknnMSE = sqrt(((Ymiss - Yknn).^2)) ./ repmat(Ystd,remove_num,1);
 
 
         knn(miss,zz,:) = [mean(Yknndiff) std(Yknndiff) mean(mean(YknnMSE))];
-        toc
-
         %% PCA-IA imputation
-        disp('Start of PCA-IA imputation algorithm');
-        tic
-
         for i = 1 :4
             Xpca1 = [X1 Y1];
             Xpca2 = [X2 Y2];
@@ -136,11 +96,6 @@ for miss = 1 : length(remove_num_mat)
             Xpca4 = [X4 Y4];
             Xpca5 = [X5 Y5];
             Xpca6 = [X6 Y6];
-            Xpca7 = [X7 Y7];
-            Xpca8 = [X8 Y8];
-            Xpca9 = [X9 Y9];
-            Xpca10 = [X10 Y10];
-            Xpca11 = [X11 Y11];
 
             Xpca1 = msvd(Xpca1,i);
             Xpca2 = msvd(Xpca2,i);
@@ -148,39 +103,23 @@ for miss = 1 : length(remove_num_mat)
             Xpca4 = msvd(Xpca4,i);
             Xpca5 = msvd(Xpca5,i);
             Xpca6 = msvd(Xpca6,i);
-            Xpca7 = msvd(Xpca7,i);
-            Xpca8 = msvd(Xpca8,i);
-            Xpca9 = msvd(Xpca9,i);
-            Xpca10 = msvd(Xpca10,i);
-            Xpca11 = msvd(Xpca11,i);
-
+            
             Ypca1 = Xpca1(removed_index,11);
             Ypca2 = Xpca2(removed_index,11);
             Ypca3 = Xpca3(removed_index,11);
             Ypca4 = Xpca4(removed_index,11);
             Ypca5 = Xpca5(removed_index,11);
             Ypca6 = Xpca6(removed_index,11);
-            Ypca7 = Xpca7(removed_index,11);
-            Ypca8 = Xpca8(removed_index,11);
-            Ypca9 = Xpca9(removed_index,11);
-            Ypca10 = Xpca10(removed_index,11);
-            Ypca11 = Xpca11(removed_index,11);
 
-            Ypca = [Ypca1 Ypca2 Ypca3 Ypca4 Ypca5 Ypca6 Ypca7 Ypca8 Ypca9 Ypca10 Ypca11];
+            Ypca = [Ypca1 Ypca2 Ypca3 Ypca4 Ypca5 Ypca6];
 
             Ypcadiff = ( Ymiss - Ypca ) ./ repmat(Ystd,remove_num,1);
-            YpcaMSE = sqrt(((Ymiss - Ypca).^2)) ./ remove_num ./ repmat(Ystd,remove_num,1);
+            YpcaMSE = sqrt(((Ymiss - Ypca).^2)) ./ repmat(Ystd,remove_num,1);
 
             Ypcadiff = reshape(Ypcadiff,1,[]);
             pca(miss,zz,i,:) = [mean(Ypcadiff) std(Ypcadiff) mean(mean(YpcaMSE))];
         end
-
-        toc
-
         %% OPLS-DA imputation
-        disp('Start of OPLS-DA imputation algorithm');
-        tic
-
         [b_acc,n_LV,w,yhat,q,P_o,W_o,i_fold]=DAMACY_top(X1(~ismember(1:data_length,removed_index),:),1:(data_length-length(unique(removed_index))),Y1(~ismember(1:data_length,removed_index)),5,1);
         [~,~,y_hat] = OPLSpred(X1(ismember(1:data_length,removed_index),:),P_o,W_o,w,q,i_fold);
         Yoplsda1 = [];
@@ -235,64 +174,13 @@ for miss = 1 : length(remove_num_mat)
             Yoplsda6(find(removed_index == aa(i))) = y_hat(i);
         end
 
-        [b_acc,n_LV,w,yhat,q,P_o,W_o,i_fold]=DAMACY_top(X7(~ismember(1:data_length,removed_index),:),1:(data_length-length(unique(removed_index))),Y7(~ismember(1:data_length,removed_index)),5,1);
-        [~,~,y_hat] = OPLSpred(X7(ismember(1:data_length,removed_index),:),P_o,W_o,w,q,i_fold);
-        Yoplsda7 = [];
-        a = 1:data_length;
-        aa = a(ismember(1:data_length,removed_index));
-        for i = 1 :length(aa)
-            Yoplsda7(find(removed_index == aa(i))) = y_hat(i);
-        end
-
-        [b_acc,n_LV,w,yhat,q,P_o,W_o,i_fold]=DAMACY_top(X8(~ismember(1:data_length,removed_index),:),1:(data_length-length(unique(removed_index))),Y8(~ismember(1:data_length,removed_index)),5,1);
-        [~,~,y_hat] = OPLSpred(X8(ismember(1:data_length,removed_index),:),P_o,W_o,w,q,i_fold);
-        Yoplsda8 = [];
-        a = 1:data_length;
-        aa = a(ismember(1:data_length,removed_index));
-        for i = 1 :length(aa)
-            Yoplsda8(find(removed_index == aa(i))) = y_hat(i);
-        end
-
-        [b_acc,n_LV,w,yhat,q,P_o,W_o,i_fold]=DAMACY_top(X9(~ismember(1:data_length,removed_index),:),1:(data_length-length(unique(removed_index))),Y9(~ismember(1:data_length,removed_index)),5,1);
-        [~,~,y_hat] = OPLSpred(X9(ismember(1:data_length,removed_index),:),P_o,W_o,w,q,i_fold);
-        Yoplsda9 = [];
-        a = 1:data_length;
-        aa = a(ismember(1:data_length,removed_index));
-        for i = 1 :length(aa)
-            Yoplsda9(find(removed_index == aa(i))) = y_hat(i);
-        end
-
-        [b_acc,n_LV,w,yhat,q,P_o,W_o,i_fold]=DAMACY_top(X10(~ismember(1:data_length,removed_index),:),1:(data_length-length(unique(removed_index))),Y10(~ismember(1:data_length,removed_index)),5,1);
-        [~,~,y_hat] = OPLSpred(X10(ismember(1:data_length,removed_index),:),P_o,W_o,w,q,i_fold);
-        Yoplsda10 = [];
-        a = 1:data_length;
-        aa = a(ismember(1:data_length,removed_index));
-        for i = 1 :length(aa)
-            Yoplsda10(find(removed_index == aa(i))) = y_hat(i);
-        end
-
-        [b_acc,n_LV,w,yhat,q,P_o,W_o,i_fold]=DAMACY_top(X11(~ismember(1:data_length,removed_index),:),1:(data_length-length(unique(removed_index))),Y11(~ismember(1:data_length,removed_index)),5,1);
-        [~,~,y_hat] = OPLSpred(X11(ismember(1:data_length,removed_index),:),P_o,W_o,w,q,i_fold);
-        Yoplsda11 = [];
-        a = 1:data_length;
-        aa = a(ismember(1:data_length,removed_index));
-        for i = 1 :length(aa)
-            Yoplsda11(find(removed_index == aa(i))) = y_hat(i);
-        end
-
-        Yoplsda = [Yoplsda1' Yoplsda2' Yoplsda3' Yoplsda4' Yoplsda5' Yoplsda6' Yoplsda7' Yoplsda8' Yoplsda9' Yoplsda10' Yoplsda11'];
+        Yoplsda = [Yoplsda1' Yoplsda2' Yoplsda3' Yoplsda4' Yoplsda5' Yoplsda6'];
 
         Yoplsdadiff = ( Ymiss - Yoplsda ) ./ repmat(Ystd,remove_num,1);
-        YoplsMSE = sqrt(((Ymiss - Yoplsda).^2)) ./ remove_num ./ repmat(Ystd,remove_num,1);
+        YoplsMSE = sqrt(((Ymiss - Yoplsda).^2))./ repmat(Ystd,remove_num,1);
 
         Yoplsdadiff = reshape(Yoplsdadiff,1,[]);
         oplsda(miss,zz,:) = [mean(Yoplsdadiff) std(Yoplsdadiff) mean(mean(YoplsMSE))];
-
-        % figure
-        % plot(mncn(Y11));
-        % hold on
-        % plot(yhat);
-        toc
     end
 end
 %figure(1)
@@ -307,6 +195,6 @@ data = [knn(:,:,3)' oplsda(:,:,3)' squeeze(pca(:,:,1,3))' squeeze(pca(:,:,2,3))'
 plot_whiskergraph(data',remove_num_mat);
 title('Mean Imputation Error - 100 repetitions','Fontsize',24);
 ylabel('?','Fontsize',24);
-
+plot_benchmark_imputation(knn,oplsda,pca);
 end
 

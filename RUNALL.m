@@ -1,5 +1,5 @@
 %% Created by Thomas Vijverberg on 04-09-2017 at Radboud University Nijmegen
-% Last edited by Thomas Vijverberg on 04-09-2017
+% Last edited by Thomas Vijverberg on 05-10-2017
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%OUTPUT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Runs complete data analysis
@@ -32,7 +32,7 @@ if(exist('S_HighDensity') ~= 1) %skip this step if we want to avoid long computa
     [ S_HighDensity ] = data_imputation(Slobith);                           % data imputation algorithm based on PCA-IA
 end
 
-%[ S_HighDensity ] = data_selfpredict_imputation(S_HighDensity);             % variable self-predict capability with imputation. What is the performance of PCA-IA per variable. 
+[ S_HighDensity ] = data_selfpredict_imputation(S_HighDensity);             % variable self-predict capability with imputation. What is the performance of PCA-IA per variable.
 
 %% Toxicity measurement
 % how does the concentration relate to PNEC
