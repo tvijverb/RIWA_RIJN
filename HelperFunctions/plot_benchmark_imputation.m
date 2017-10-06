@@ -14,9 +14,12 @@ figure(1);
 
 hold on;
 for i = 1 : length(mknn(:,1,1))
-    plot(mean(mknn(i,:,3)));
+    a = squeeze(mknn(i,:,:))
+    m(i) = mean(a(:,3));
     disp(num2str(mean(mknn(i,:,1))));
 end
+
+plot(m);
 
 
 end

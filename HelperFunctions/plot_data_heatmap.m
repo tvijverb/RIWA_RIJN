@@ -17,8 +17,9 @@ set(gca, 'FontSize', 30);
 xt = get(gca, 'XTick');
 set(gca, 'FontSize', 30);
 
-rescalefig1080;
-fig2plotly(gcf,'strip',false,'showscale',false,'showlegend',false);
+rescalefig800;
+%fig2plotly(gcf,'strip',false,'showscale',false,'showlegend',false);
+fig2plotly(gcf);
 close(gcf);
 end
 
