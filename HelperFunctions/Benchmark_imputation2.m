@@ -1,4 +1,4 @@
-function [ knn,pca,oplsda,data ] = Benchmark_imputation2( )
+function [ knn,pca,oplsda ] = Benchmark_imputation2( )
 %% Created by Thomas Vijverberg on 05-10-2017 at Radboud University Nijmegen
 % Last edited by Thomas Vijverberg on 05-10-2017
 
@@ -188,13 +188,13 @@ end
 %aboxplot([knn(:,2) oplsda(:,2) squeeze(pca(:,1,2)) squeeze(pca(:,2,2)) squeeze(pca(:,3,2)) squeeze(pca(:,4,2))],'labels',{'k-NN','OPLS-DA','PCA 1PC','PCA 2PCs','PCA 3PCs','PCA 4PCs'},'colormap',cmap);
 %title('Standard Deviation Imputation Error - 100 repetitions','Fontsize',24);
 
-figure(2)
-cmap = [0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9];
-aboxplot([knn(1,:,3)' oplsda(1,:,3)' squeeze(pca(1,:,1,3))' squeeze(pca(1,:,2,3))' squeeze(pca(1,:,3,3))' squeeze(pca(1,:,4,3))'],'labels',{'k-NN','OPLS-DA','PCA 1PC','PCA 2PCs','PCA 3PCs','PCA 4PCs'},'colormap',cmap);
-data = [knn(:,:,3)' oplsda(:,:,3)' squeeze(pca(:,:,1,3))' squeeze(pca(:,:,2,3))' squeeze(pca(:,:,3,3))' squeeze(pca(:,:,4,3))'];
-plot_whiskergraph(data',remove_num_mat);
-title('Mean Imputation Error - 100 repetitions','Fontsize',24);
-ylabel('?','Fontsize',24);
-plot_benchmark_imputation(knn,oplsda,pca);
+% figure(2)
+% cmap = [0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9; 0.9 0.9 0.9];
+% aboxplot([knn(1,:,3)' oplsda(1,:,3)' squeeze(pca(1,:,1,3))' squeeze(pca(1,:,2,3))' squeeze(pca(1,:,3,3))' squeeze(pca(1,:,4,3))'],'labels',{'k-NN','OPLS-DA','PCA 1PC','PCA 2PCs','PCA 3PCs','PCA 4PCs'},'colormap',cmap);
+% data = [knn(:,:,3)' oplsda(:,:,3)' squeeze(pca(:,:,1,3))' squeeze(pca(:,:,2,3))' squeeze(pca(:,:,3,3))' squeeze(pca(:,:,4,3))'];
+% plot_whiskergraph(data',remove_num_mat);
+% title('Mean Imputation Error - 100 repetitions','Fontsize',24);
+% ylabel('?','Fontsize',24);
+% plot_benchmark_imputation(knn,oplsda,pca);
 end
 
